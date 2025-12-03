@@ -36,7 +36,6 @@ body {
 
 /* Layout */
 
-
 .app {
   min-height: 100vh;
 }
@@ -402,19 +401,48 @@ body {
   text-align: left;
 }
 
-/* About */
+/* ========= ABOUT SECTION ========= */
 
 .about-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
   gap: 2.5rem;
   align-items: flex-start;
+  perspective: 1000px; /* for 3D / border glow depth */
 }
 
 .text-lg {
   font-size: 1rem;
   color: var(--muted);
 }
+
+/* columns fade-in */
+.about-col {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: aboutFadeUp 0.7s ease forwards;
+}
+
+.about-col-main {
+  animation-delay: 0.05s;
+}
+
+.about-col-side {
+  animation-delay: 0.15s;
+}
+
+@keyframes aboutFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mission / Vision cards */
 
 .about-cards {
   display: grid;
@@ -424,17 +452,85 @@ body {
 }
 
 .mini-card {
+  position: relative;
   background: radial-gradient(circle at top left, #1f2937, #020617);
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid rgba(148, 163, 184, 0.45);
   font-size: 0.9rem;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
 .mini-card h4 {
-  margin-top: 0;
+  margin-top: 0.35rem;
   margin-bottom: 0.4rem;
 }
+
+/* entry animation for mini cards */
+.mini-card-animated {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: miniCardFade 0.7s ease forwards;
+}
+
+.mini-card-animated.delay-2 {
+  animation-delay: 0.15s;
+}
+
+@keyframes miniCardFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* mini badge */
+
+.mini-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+
+/* right side blocks */
+
+.about-block {
+  position: relative;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: linear-gradient(
+    to right,
+    rgba(15, 23, 42, 0.95),
+    rgba(15, 23, 42, 0.98)
+  );
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* values / team lists */
 
 .list-check,
 .list-dot {
@@ -467,6 +563,78 @@ body {
   color: var(--muted);
 }
 
+/* hover slide for list items */
+
+.list-animated li {
+  position: relative;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.list-animated li:hover {
+  transform: translateX(4px);
+  color: var(--accent);
+}
+
+.list-animated li:hover strong {
+  color: var(--accent-2);
+}
+
+/* CARD motion + color change + flowing neon border */
+
+.about-block,
+.mini-card {
+  /* base state already defined above */
+}
+
+.about-block:hover,
+.mini-card:hover {
+  transform: translateY(-10px);
+  background: linear-gradient(135deg, #1f2937, #0f172a 70%);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.55);
+  border-color: transparent;
+}
+
+/* flowing light border */
+
+.about-block::before,
+.mini-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(99,102,241,0.2),
+    rgba(236,72,153,0.6),
+    rgba(99,102,241,0.2)
+  );
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.about-block:hover::before,
+.mini-card:hover::before {
+  opacity: 1;
+  animation: borderFlow 2s linear infinite;
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
 .mt-32 {
   margin-top: 2rem;
 }
@@ -483,7 +651,7 @@ body {
   margin: 0.5rem 0 0.3rem;
 }
 
-/* Pricing */
+/* Pricing (no longer used as section, but kept in case) */
 
 .pricing-card {
   text-align: left;
@@ -704,7 +872,6 @@ textarea {
   .about-cards {
     grid-template-columns: minmax(0, 1fr);
   }
-  
 }
 
 @media (max-width: 480px) {
@@ -716,6 +883,7 @@ textarea {
     font-size: 2rem;
   }
 }
+
 /* Grid for team */
 .grid-4 {
   display: grid;
@@ -798,4 +966,436 @@ textarea {
   .grid-4 {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Services – icons & badges */
+
+.core-services-grid .service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.service-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(148, 163, 184, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.service-icon span {
+  font-size: 1.4rem;
+}
+
+.service-card:hover .service-icon {
+  transform: translateY(-3px) scale(1.06);
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.badge-row {
+  list-style: none;
+  padding: 0;
+  margin: 0.2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.badge-row li {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  color: var(--muted);
+}
+
+/* Detail services blocks */
+
+.detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.detail-block {
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  margin-top: 0.4rem;
+}
+
+.detail-block:first-of-type {
+  border-top: none;
+  padding-top: 0.2rem;
+}
+
+/* Entry animation (staggered fade-up) */
+
+@keyframes fadeUpSoft {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.core-services-grid .card,
+.detail-services-grid .card {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeUpSoft 0.6s ease forwards;
+}
+
+/* stagger delay for core services */
+.core-services-grid .card:nth-child(1) { animation-delay: 0.05s; }
+.core-services-grid .card:nth-child(2) { animation-delay: 0.12s; }
+.core-services-grid .card:nth-child(3) { animation-delay: 0.19s; }
+.core-services-grid .card:nth-child(4) { animation-delay: 0.26s; }
+.core-services-grid .card:nth-child(5) { animation-delay: 0.33s; }
+.core-services-grid .card:nth-child(6) { animation-delay: 0.40s; }
+
+/* stagger delay for detailed services */
+.detail-services-grid .card:nth-child(1) { animation-delay: 0.08s; }
+.detail-services-grid .card:nth-child(2) { animation-delay: 0.16s; }
+.detail-services-grid .card:nth-child(3) { animation-delay: 0.24s; }
+.detail-services-grid .card:nth-child(4) { animation-delay: 0.32s; }
+
+/* Clock-hand style spin for service headlines */
+@keyframes clockSpinOnce {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg); /* clockwise full circle */
+  }
+}
+
+.service-card h3 {
+  display: inline-block;
+  transform-origin: center; /* spin from center like a clock */
+  transition: color 0.3s ease;
+}
+
+/* Run animation once on hover */
+.service-card:hover h3 {
+  animation: clockSpinOnce 0.7s ease-out forwards;
+  color: var(--accent);
+}
+/* HERO CARD – ROTATING BORDER */
+.hero-highlight-card {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Rotating border */
+.hero-highlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;              /* Border thickness */
+  border-radius: inherit;
+
+  /* rotating border source */
+  background: conic-gradient(
+    from 0deg,
+    var(--accent) 0deg,
+    var(--accent-2) 90deg,
+    var(--accent) 180deg,
+    var(--accent-2) 270deg,
+    var(--accent) 360deg
+  );
+
+  /* keep only the border visible */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: rotateBorder 4s linear infinite;
+  pointer-events: none;
+}
+
+/* CLOCKWISE rotation around border */
+@keyframes rotateBorder {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* Animated gradient heading – color moves left to right continuously */
+.animated-heading {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    #6366f1,
+    #ec4899,
+    #f97316,
+    #22c55e,
+    #6366f1
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: headingGradientFlow 5s linear infinite;
+}
+
+/* চলন্ত গ্রেডিয়েন্ট, বারবার লুপ করবে */
+@keyframes headingGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 150% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+/* Detail services grid – ছোট কার্ড লেআউট */
+.detail-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+/* ছোট, compact detail cards */
+.detail-mini-card {
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+
+  /* আলাদা আলাদা background রাখার আগে default */
+  background: radial-gradient(circle at top left, #111827, #020617);
+
+  /* ঘোরা + hover motion এর জন্য */
+  transform: translateY(0) rotate(0deg);
+  transition:
+    transform 0.6s ease-out,
+    box-shadow 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease;
+}
+
+/* === আলাদা আলাদা background tone প্রতিটি কার্ডের জন্য === */
+.detail-mini-card:nth-child(1) {
+  background: radial-gradient(circle at top left, rgba(56,189,248,0.22), #020617);
+}
+.detail-mini-card:nth-child(2) {
+  background: radial-gradient(circle at top left, rgba(244,114,182,0.22), #020617);
+}
+.detail-mini-card:nth-child(3) {
+  background: radial-gradient(circle at top left, rgba(251,191,36,0.22), #020617);
+}
+.detail-mini-card:nth-child(4) {
+  background: radial-gradient(circle at top left, rgba(129,140,248,0.22), #020617);
+}
+.detail-mini-card:nth-child(5) {
+  background: radial-gradient(circle at top left, rgba(52,211,153,0.22), #020617);
+}
+.detail-mini-card:nth-child(6) {
+  background: radial-gradient(circle at top left, rgba(248,113,113,0.22), #020617);
+}
+.detail-mini-card:nth-child(7) {
+  background: radial-gradient(circle at top left, rgba(45,212,191,0.22), #020617);
+}
+.detail-mini-card:nth-child(8) {
+  background: radial-gradient(circle at top left, rgba(96,165,250,0.22), #020617);
+}
+.detail-mini-card:nth-child(9) {
+  background: radial-gradient(circle at top left, rgba(251,146,60,0.22), #020617);
+}
+
+/* === Border দিয়ে ঘুরতে থাকা light === */
+.detail-mini-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;              /* border width */
+  border-radius: inherit;
+
+  background: conic-gradient(
+    from 0deg,
+    rgba(99,102,241,0.0),
+    rgba(99,102,241,0.85),
+    rgba(236,72,153,0.95),
+    rgba(99,102,241,0.85),
+    rgba(99,102,241,0.0)
+  );
+  background-size: 200% 200%;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  pointer-events: none;
+  animation: detailBorderSpin 4s linear infinite;
+  opacity: 0.75;
+}
+
+@keyframes detailBorderSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 🔁 Hover এ: কার্ড একবার ঘুরবে + একটু উপরে উঠবে + bg dark হবে */
+.detail-mini-card.card-hover:hover {
+  transform: translateY(-6px) scale(1.01) rotate(360deg);
+  background: radial-gradient(circle at top left, #0b1120, #020617);
+  box-shadow: var(--shadow-soft);
+  border-color: rgba(129, 140, 248, 0.9);
+}
+
+.detail-mini-card.card-hover:hover::before {
+  animation-duration: 2.5s;
+  opacity: 1;
+}
+
+/* উপরের ছোট ট্যাগ */
+.detail-pill {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.16rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: var(--muted);
+  margin-bottom: 0.1rem;
+}
+
+/* কার্ডের ভিতরের টেক্সট টিউন */
+.detail-mini-card h3 {
+  font-size: 0.98rem;
+  margin: 0.1rem 0 0.25rem;
+}
+
+.detail-mini-card p {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+/* list একটু টাইট */
+.detail-mini-card .list-dot.small li {
+  font-size: 0.8rem;
+}
+
+/* Entry animation – stagger সহ */
+.detail-services-grid .card {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeUpSoft 0.55s ease forwards;
+}
+
+.detail-services-grid .card:nth-child(1) { animation-delay: 0.05s; }
+.detail-services-grid .card:nth-child(2) { animation-delay: 0.10s; }
+.detail-services-grid .card:nth-child(3) { animation-delay: 0.15s; }
+.detail-services-grid .card:nth-child(4) { animation-delay: 0.20s; }
+.detail-services-grid .card:nth-child(5) { animation-delay: 0.25s; }
+.detail-services-grid .card:nth-child(6) { animation-delay: 0.30s; }
+.detail-services-grid .card:nth-child(7) { animation-delay: 0.35s; }
+.detail-services-grid .card:nth-child(8) { animation-delay: 0.40s; }
+.detail-services-grid .card:nth-child(9) { animation-delay: 0.45s; }
+
+/* Responsive – ট্যাব/মোবাইলে 2 / 1 column */
+@media (max-width: 900px) {
+  .detail-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .detail-services-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* === PORTFOLIO CARDS – corner gradient + hover scale === */
+
+#portfolio .card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding: 1.3rem 1.3rem 1.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: radial-gradient(
+      circle at top left,
+      rgba(129, 140, 248, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(236, 72, 153, 0.28),
+      transparent 60%
+    ),
+    rgba(15, 23, 42, 0.9);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+/* Hover এ কার্ড বড় হবে + depth shadow */
+#portfolio .card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 30px 45px rgba(0, 0, 0, 0.55);
+  border-color: rgba(129, 140, 248, 0.9);
+}
+
+/* আরও সুন্দর glowing corner effect hover এ */
+#portfolio .card:hover::after {
+  opacity: 1;
+  transform: scale(1.4) rotate(35deg);
+}
+
+/* Corner glow highlight overlay */
+#portfolio .card::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(
+    rgba(99, 102, 241, 0.2),
+    rgba(236, 72, 153, 0.25),
+    rgba(99, 102, 241, 0.2)
+  );
+  filter: blur(60px);
+  opacity: 0;
+  transition: 0.5s ease;
+  pointer-events: none;
+}
+
+/* Dashed placeholder cards */
+#portfolio .card-dashed {
+  border: 2px dashed rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.65);
+  text-align: center;
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+
+/* Placeholder এর hover effect */
+#portfolio .card-dashed:hover {
+  transform: translateY(-10px) scale(1.04);
+  background: rgba(15, 23, 42, 0.85);
 }

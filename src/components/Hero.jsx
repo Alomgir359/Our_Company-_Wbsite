@@ -4,7 +4,7 @@ const Hero = () => {
       <div className="container hero-grid">
         <div className="hero-content">
           <p className="eyebrow">Mobile &amp; Web Software Studio</p>
-          <h1>We Build Scalable Mobile &amp; Web Applications</h1>
+          <h1 className="hero-title animated-heading">We Build Scalable Mobile &amp; Web Applications</h1>
           <p className="hero-subtitle">
             We help businesses grow with custom Android, iOS, and Web solutions
             using modern technologies like Flutter, React Native, Laravel,
